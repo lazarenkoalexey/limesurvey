@@ -61,7 +61,7 @@ nodes:
 engine: php7.1
 success: 'Your LimeSurvey platform is being installed.<br /> The details of the LimeSurvey
   installation are shown below:<br />Path : /var/www/webroot/ROOT<br />URL : ${env.protocol}://${env.domain}/<br
-  />Admin URL : ${env.protocol}://${env.domain}/index.php?r=admin/authentication/sa/login<br
+  />Admin URL : <a href='${env.protocol}://${env.domain}/index.php?r=admin/authentication/sa/login'>${env.protocol}://${env.domain}/</a><br
   />Admin Username : admin<br />Admin Password : ${globals.ADMIN_PASS}<br />Admin
   Email: ${user.email}'
 name: LimeSurvey
