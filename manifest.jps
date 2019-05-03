@@ -6,7 +6,7 @@ onInstall:
 - deploy:
     name: limesurvey-3.17.1.zip
     context: ROOT
-    archive: "${baseUrl}dumps/limesurvey-3.17.1.zip?raw=true"
+    archive: "${baseUrl}dumps/limesurvey-3.17.1.zip"
 - prepareSqlDatabase:
   - newDatabaseUser:
       password: "${globals.DB_PASS}"
