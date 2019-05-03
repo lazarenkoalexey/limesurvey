@@ -1,0 +1,72 @@
+globals:
+  DB_PASS: "${fn.password(6)}"
+  APP_CONFIG_PATH: "/var/www/webroot/ROOT/application/config/config.php"
+  ADMIN_PASS: "${fn.password(10)}"
+onInstall:
+- deploy:
+    name: limesurvey-3.17.1.zip
+    context: ROOT
+    archive: "${baseUrl}c30aa99051ff9efb5ed3f0ae95341fc3&download"
+- prepareSqlDatabase:
+  - newDatabaseUser:
+      password: "${globals.DB_PASS}"
+      name: lime
+    newDatabaseName: lime
+    nodeGroup: sqldb
+    loginCredentials:
+      password: "${nodes.sqldb.password}"
+      user: root
+- restoreSqlDump:
+    password: "${globals.DB_PASS}"
+    databaseName: lime
+    dump: "${baseUrl}165b9cee504176a85739272a704af440&download"
+    nodeGroup: sqldb
+    user: lime
+- applySqlPatch:
+    patch: UPDATE lime.lime_users SET email='${user.email}' WHERE uid=1;UPDATE lime.lime_settings_global
+      SET stg_value='${user.email}' WHERE stg_name='siteadminbounce';UPDATE lime.lime_settings_global
+      SET stg_value='${user.email}' WHERE stg_name='siteadminemail';UPDATE `lime_users`
+      SET `password` = SHA2('${globals.ADMIN_PASS}', 256) WHERE `lime_users`.`uid`;
+      DELETE FROM `lime_notifications` WHERE id=1;
+    password: "${globals.DB_PASS}"
+    databaseName: lime
+    nodeGroup: sqldb
+    user: lime
+- replaceInFile:
+  - path: "${SYSTEM_ETC}/php.ini"
+    replacements:
+    - pattern: ".*extension=mysql.so"
+      replacement: extension=mysql.so
+    nodeMission: cp
+- cmd [cp]:
+  - sed -i 's|host=192.168.2.235|host=${nodes.sqldb.address}|g' ${globals.APP_CONFIG_PATH}
+  - sed -i 's|dbname=limesurvey;|dbname=lime;|g' ${globals.APP_CONFIG_PATH}
+  - sed -i 's|EoKjHZGpEq|${globals.DB_PASS}|g' ${globals.APP_CONFIG_PATH}
+  - sed -i 's|root|lime|g' ${globals.APP_CONFIG_PATH}
+- restartNodes [cp]: {}
+description: "LimeSurvey (formerly PHPSurveyor) is an open source online survey application
+  written in PHP based on a MySQL, PostgreSQL or MSSQL database. It enables users
+  without coding knowledge to develop, publish and collect responses to surveys. \r\n\r\nSurveys
+  can include branching, custom preferred layout and design (using a web template
+  system), and can provide basic statistical analysis of survey results."
+type: install
+version: '0.1'
+result: 0
+baseUrl: https://download.jelastic.com/public.php?service=files&t=
+nodes:
+- cloudlets: 8
+  nodeType: apache2
+- cloudlets: 8
+  nodeType: mysql5
+engine: php7.1
+success: 'Your LimeSurvey platform is being installed.<br /> The details of the LimeSurvey
+  installation are shown below:<br />Path : /var/www/webroot/ROOT<br />URL : ${env.protocol}://${env.domain}/<br
+  />Admin URL : ${env.protocol}://${env.domain}/index.php?r=admin/authentication/sa/login<br
+  />Admin Username : admin<br />Admin Password : ${globals.ADMIN_PASS}<br />Admin
+  Email: ${user.email}'
+name: LimeSurvey
+logo: 4f954e798469f90374bbe0e629c0832b&download
+id: lime
+categories:
+- apps/content-management
+homepage: http://www.limesurvey.org
