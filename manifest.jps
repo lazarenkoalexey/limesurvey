@@ -6,7 +6,7 @@ onInstall:
 - deploy:
     name: limesurvey-3.17.1.zip
     context: ROOT
-    archive: "${baseUrl}c30aa99051ff9efb5ed3f0ae95341fc3&download"
+    archive: "${baseUrl}dumps/limesurvey-3.17.1.zip?raw=true"
 - prepareSqlDatabase:
   - newDatabaseUser:
       password: "${globals.DB_PASS}"
@@ -19,7 +19,7 @@ onInstall:
 - restoreSqlDump:
     password: "${globals.DB_PASS}"
     databaseName: lime
-    dump: "${baseUrl}165b9cee504176a85739272a704af440&download"
+    dump: "${baseUrl}dumps/dump.sql"
     nodeGroup: sqldb
     user: lime
 - applySqlPatch:
@@ -52,7 +52,7 @@ description: "LimeSurvey (formerly PHPSurveyor) is an open source online survey 
 type: install
 version: '0.1'
 result: 0
-baseUrl: https://download.jelastic.com/public.php?service=files&t=
+baseUrl: https://raw.githubusercontent.com/jelastic-jps/limesurvey/master/
 nodes:
 - cloudlets: 8
   nodeType: apache2
@@ -65,7 +65,7 @@ success: 'Your LimeSurvey platform is being installed.<br /> The details of the 
   />Admin Username : admin<br />Admin Password : ${globals.ADMIN_PASS}<br />Admin
   Email: ${user.email}'
 name: LimeSurvey
-logo: 4f954e798469f90374bbe0e629c0832b&download
+logo: images/limesurvey.png
 id: lime
 categories:
 - apps/content-management
