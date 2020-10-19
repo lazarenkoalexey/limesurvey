@@ -1,4 +1,5 @@
 type: install
+version: 1.7
 id: lime
 name: LimeSurvey
 
@@ -48,7 +49,7 @@ onInstall:
     sed -i "s|host=localhost|host=${nodes.sqldb.address}|g" ${globals.APP_CONFIG_PATH}
     sed -i "s|'password' => '',|'password' => '${nodes.sqldb.password}',|g" ${globals.APP_CONFIG_PATH}
     cd ${globals.WEBROOT}application/commands;
-    DBENGINE=MyISAM php console.php install admin ${globals.ADMIN_PASS} Admin ${user.email}
+    DBENGINE=MyISAM php console.php install admin '${globals.ADMIN_PASS}' Admin ${user.email}
     sed -i "s|'username' => 'root'|'username' => 'lime'|g" ${globals.APP_CONFIG_PATH}
     sed -i "s|'password' => '${nodes.sqldb.password}',|'password' => '${globals.DB_PASS}',|g" ${globals.APP_CONFIG_PATH}
 - restartNodes [cp]: {}
