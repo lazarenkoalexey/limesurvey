@@ -34,7 +34,7 @@ onInstall:
 - deploy:
     name: limesurvey-${globals.version_limesurvey}.zip
     context: ROOT
-    archive: https://download.limesurvey.org/latest-stable-release/limesurvey${globals.version_limesurvey}.zip
+    archive: https://github.com/LimeSurvey/LimeSurvey/archive/${globals.version_limesurvey}.zip
 - prepareSqlDatabase:
   - newDatabaseUser:
       password: ${globals.DB_PASS}
